@@ -291,9 +291,12 @@ void InsertarC(int valor, int cliente, int turno){
 void Eliminar(int no_caja){
 	GNodo *temporal = lista;
 	GNodo *anterior = NULL;
-	while(temporal->no_caja != no_caja) {
+	while(temporal->no_caja != no_caja && temporal->seguente !=NULL) {
 		anterior = temporal;
 		temporal = temporal->seguente;
+	}
+	if(temporal->no_caja == no_caja){
+		
 	}
 }
 
