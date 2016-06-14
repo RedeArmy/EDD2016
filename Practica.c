@@ -31,7 +31,8 @@ typedef struct Nodo
 
 GNodo *lista;
 GNodo *colaP;
-GNodo *cnodo;
+GNodo *COnodo;
+GNodo *CNnodo;
 GNodo *CPnodo;
 GNodo *p1nodo;
 GNodo *p2nodo;
@@ -44,7 +45,8 @@ GNodo *circular2;
 void Insertar();
 void InsertarC();
 void Recorrer();
-void pushC();
+void pushCO();
+void pushCN();
 void pushCP();
 void pushP1();
 void pushP2();
@@ -55,7 +57,8 @@ void Extra(int);
 
 int main(){
 	lista = NULL;
-	cnodo = NULL;
+	COnodo = NULL;
+    CNnodo = NULL;
 	CPnodo = NULL;
 	p1nodo = NULL;
 	p2nodo = NULL;
@@ -64,12 +67,8 @@ int main(){
 	circular1 = NULL;
 	circular2 = NULL;
 
-	pushC(12);
-	pushC(4);
-	pushC(25);
-
 	
-      int k,r,t,h,c;
+      int k,r,t,h,c,z,v;
  
       printf("------- SIMULACIÓN DEL SISTEMA DE SUPERMECADO------- \n");
       
@@ -102,11 +101,11 @@ int main(){
 								 switch(j){ 
 									int w;
 									case 1: 
-									 w = rand() % (80-15+1) + 15;
+									 w = rand() % (90-15+2) + 15;
 									 pushCP(i,w, "HOMBRE");
 									 break;
 									case 2:
-									 w = rand() % (80-15+1) + 15;
+									 w = rand() % (90-15+2) + 15;
 									 pushCP(i,w, "MUJER");
 									 break;
 								}
@@ -122,6 +121,25 @@ int main(){
 							InsertarC(o,p,q);		 				 
 				}
 				
+		  printf("Ingresar Cantidad de Clientes en Cola de Pagos \n"); 
+		  scanf("%d", &z);
+		     for(int i = 1; i<=z; i++){
+							int o,p; 
+							o = rand() % (100-50+1) + 50;
+							p = rand() % (100-50+1) + 50;
+							pushCN(o,p);		 				 
+				}
+				
+		  printf("Ingresar Cantidad de Clientes en Cola de “Ciudadanos de Oro” \n");
+		  scanf("%d", &v); 
+		   
+		  	 for(int i = 1; i<=v; i++){
+							int o,p; 
+							o = rand() % (100-50+1) + 50;
+							p = rand() % (100-50+1) + 50;
+							pushCO(o,p);		 				 
+				}
+				
 		  printf("Ingresar Cantidad de Cajas \n");  
 		  scanf("%d", &h);
 		        for(int i = 1; i<=h; i++){
@@ -129,12 +147,6 @@ int main(){
 				}
 		  
 Recorrer(); 
-		  /*
-		  printf("Ingresar Cantidad de Clientes en Cola de Pagos \n"); 
-		  scanf("%d", &y);
-		  printf("Ingresar Cantidad de Clientes en Cola de “Ciudadanos de Oro” \n");
-		  scanf("%d", &i);  
-*/
       
 		  while(1){
 		  printf("Desea Ingresar Mas Carretas? SI [y], NO [n] o SALIR[s]: ");
@@ -251,14 +263,33 @@ void pushCP(int cliente, int edad, char *genero){
 }
 
 /*COLA CLIENTES NORMALES*/
-void pushC(int cliente){ 
+void pushCN(int cliente, int valor){ 
 	GNodo *new = (GNodo *)malloc(sizeof(GNodo));
-	GNodo *temp = cnodo;
+	GNodo *temp = CNnodo;
 	new->cliente = cliente;
+	new->valor = valor;
 	new->siguiente = NULL;
 	
-	if(cnodo == NULL)
-		cnodo = new;
+	if(CNnodo == NULL)
+		CNnodo = new;
+	else {
+		while(temp->siguiente != NULL){
+			temp = temp->siguiente;
+		}	
+		temp->siguiente = new;
+	}
+}
+
+/*COLA CLIENTES ORO*/
+void pushCO(int cliente, int valor){ 
+	GNodo *new = (GNodo *)malloc(sizeof(GNodo));
+	GNodo *temp = COnodo;
+	new->cliente = cliente;
+	new->valor = valor;
+	new->siguiente = NULL;
+	
+	if(COnodo == NULL)
+		COnodo = new;
 	else {
 		while(temp->siguiente != NULL){
 			temp = temp->siguiente;
@@ -286,19 +317,6 @@ void InsertarC(int valor, int cliente, int turno){
 	
 }
 
-
-/* Eliminar de la lista doblemente enlazada */
-void Eliminar(int no_caja){
-	GNodo *temporal = lista;
-	GNodo *anterior = NULL;
-	while(temporal->no_caja != no_caja && temporal->seguente !=NULL) {
-		anterior = temporal;
-		temporal = temporal->seguente;
-	}
-	if(temporal->no_caja == no_caja){
-		anterior->seguente = temporal->seguente;
-	}
-}
 
 /*LISTA DOBLEMENTE ENLAZADA ORDENANDA*/
 void Insertar(int no_caja, char *estado, int no_cliente, int no_carreta, int no_atendido){
@@ -432,7 +450,7 @@ void Recorrer(){
 			}
 			printf("\n");
 
-	GNodo *tempC = circular1;		
+	 GNodo *tempC = circular1;		
 			while(tempC != circular2)
 			{
 				printf("No Carreta: %d\n No. Cliente: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->turno);
@@ -440,23 +458,30 @@ void Recorrer(){
 			}
 			printf("No Carreta: %d\n No. Cliente: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->turno);
 			printf("\n");
-
-	GNodo *temporal = lista;
-	
-	while(temporal->seguente!=NULL){
-		printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
-		temporal = temporal->seguente;
-	}
-	
-	printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
 			
-			
-	  GNodo *tempCOLA = cnodo;		
-		while(tempCOLA!=NULL)
+	  GNodo *tempCN = COnodo;		
+		while(tempCN!=NULL)
 			{
-				printf("Número de Cliente: %d\n ", tempCOLA->cliente);
-				tempCOLA = tempCOLA->siguiente;
+				printf("Número de Cliente: %d\n Número de Carreta: %d\n\n ", tempCN->cliente, tempCN->valor);
+				tempCN = tempCN->siguiente;
 			}
 			printf("\n");
 			
+	  GNodo *tempCO = CNnodo;		
+		while(tempCO!=NULL)
+			{
+				printf("Número de Cliente: %d\n Número de Carreta: %d\n\n ", tempCO->cliente, tempCO->valor);
+				tempCO = tempCO->siguiente;
+			}
+			printf("\n");
+
+		GNodo *temporal = lista;
+		
+		while(temporal->seguente!=NULL){
+			printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
+			temporal = temporal->seguente;
+		}
+		
+		printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
+				
 }
