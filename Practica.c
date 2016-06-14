@@ -256,14 +256,14 @@ void pushC(int cliente){
 	GNodo *new = (GNodo *)malloc(sizeof(GNodo));
 	new->cliente = cliente;
 
-		    new->siguiente = NULL;
-			presente->siguiente = NULL;
+	new->siguiente = NULL;
+	presente->siguiente = NULL;
 
 	while(new->siguiente != NULL)
-    cnodo=cnodo->siguiente;
+		cnodo=cnodo->siguiente;
 
 	new->siguiente = NULL;
-    new->siguiente = cnodo;
+	new->siguiente = cnodo;
 	new = cnodo;
 }
 
@@ -286,6 +286,16 @@ void InsertarC(int valor, int cliente, int turno){
 	
 }
 
+
+/* Eliminar de la lista doblemente enlazada */
+void Eliminar(int no_caja){
+	GNodo *temporal = lista;
+	GNodo *anterior = NULL;
+	while(temporal->no_caja != no_caja) {
+		anterior = temporal;
+		temporal = temporal->seguente;
+	}
+}
 
 /*LISTA DOBLEMENTE ENLAZADA ORDENANDA*/
 void Insertar(int no_caja, char *estado, int no_cliente, int no_carreta, int no_atendido){
