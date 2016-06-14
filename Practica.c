@@ -252,19 +252,19 @@ void pushCP(int cliente, int edad, char *genero){
 
 /*COLA CLIENTES NORMALES*/
 void pushC(int cliente){ 
-	GNodo *presente = (GNodo *)malloc(sizeof(GNodo));
 	GNodo *new = (GNodo *)malloc(sizeof(GNodo));
+	GNodo *temp = cnodo;
 	new->cliente = cliente;
-
 	new->siguiente = NULL;
-	presente->siguiente = NULL;
-
-	while(new->siguiente != NULL)
-		cnodo=cnodo->siguiente;
-
-	new->siguiente = NULL;
-	new->siguiente = cnodo;
-	new = cnodo;
+	
+	if(cnodo == NULL)
+		cnodo = new;
+	else {
+		while(temp->siguiente != NULL){
+			temp = temp->siguiente;
+		}	
+		temp->siguiente = new;
+	}
 }
 
 /*LISTA CIRCULAR SIMPLEMENTE ENLAZADA*/
@@ -296,7 +296,7 @@ void Eliminar(int no_caja){
 		temporal = temporal->seguente;
 	}
 	if(temporal->no_caja == no_caja){
-		
+		anterior->siguente = temporal->seguente;
 	}
 }
 
