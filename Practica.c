@@ -296,7 +296,7 @@ void Eliminar(int no_caja){
 		temporal = temporal->seguente;
 	}
 	if(temporal->no_caja == no_caja){
-		anterior->siguente = temporal->seguente;
+		anterior->seguente = temporal->seguente;
 	}
 }
 
