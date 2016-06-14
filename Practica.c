@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define false 0
 #define true 1
@@ -16,7 +17,7 @@ typedef struct Nodo
 {
 	int no_caja, no_atendido, no_carreta, no_cliente;
 	char estado[25], genero[25];
-	int valor, edad, cliente, turno;
+	int valor, edad, cliente, turno, carreta;
 	int id;
 	bool gestando;
 	struct Nodo *seguente;
@@ -45,6 +46,8 @@ GNodo *circular2;
 void Insertar();
 void InsertarC();
 void Recorrer();
+void Agregar();
+void Simulacion();
 void pushCO();
 void pushCN();
 void pushCP();
@@ -52,8 +55,11 @@ void pushP1();
 void pushP2();
 void pushP3();
 void pushP4();
+void Atender();
 int popP(void);
+int popCP(void);
 void Extra(int);
+void Graficar();
 
 int main(){
 	lista = NULL;
@@ -68,13 +74,14 @@ int main(){
 	circular2 = NULL;
 
 	
-      int k,r,t,h,c,z,v;
+      int k,r,l,h,z,v;
  
       printf("------- SIMULACIÓN DEL SISTEMA DE SUPERMECADO------- \n");
       
 		  printf("Ingresar Cantidad de Carretas \n"); 
 		  scanf("%d", &k);
-		  
+		  int dato = k;
+		  srand(time (NULL));
 			for(int i = 1; i<=k; i++){
 					int j = rand() % (4-1+1) + 1;
 							 switch(j){ 
@@ -101,19 +108,19 @@ int main(){
 								 switch(j){ 
 									int w;
 									case 1: 
-									 w = rand() % (90-15+2) + 15;
+									 w = rand() % (90-17+2) + 15;
 									 pushCP(i,w, "HOMBRE");
 									 break;
 									case 2:
-									 w = rand() % (90-15+2) + 15;
+									 w = rand() % (90-17+2) + 15;
 									 pushCP(i,w, "MUJER");
 									 break;
 								}
 				}
 				
 	      printf("Ingresar Cantidad de Clientes Comprando \n"); 
-		  scanf("%d", &t);
-		  	    for(int i = 1; i<=t; i++){
+		  scanf("%d", &l);
+		  	    for(int i = 1; i<=l; i++){
 							int o,p,q; 
 							o = rand() % (100-50+1) + 50;
 							p = rand() % (100-50+1) + 50;
@@ -143,44 +150,67 @@ int main(){
 		  printf("Ingresar Cantidad de Cajas \n");  
 		  scanf("%d", &h);
 		        for(int i = 1; i<=h; i++){
-							Insertar(i,"LIBRE",0,0,0);		 				 
+							Insertar(i,"LIBRE",0,0,0,0);		 				 
 				}
-		  
-Recorrer(); 
-      
-		  while(1){
+Graficar();
+Agregar(dato); 
+}
+
+
+void Agregar(int bandera){
+	char m;
+	int c;
+		 while(1){
 		  printf("Desea Ingresar Mas Carretas? SI [y], NO [n] o SALIR[s]: ");
-		  char m=getchar();
+		  scanf ("%s", &m);
 		  getchar();
 		  
 		  switch(m){
 		  case 'y': printf("\nIngresar Cantidad de Carretas \n"); 
 					scanf("%d", &c);
-						for(int i = k; i<=c; i++){
+						for(int i = 1; i<=c; i++){
 								int j = rand() % (4-1+1) + 1;
 										 switch(j){ 
 											case 1: 
-											 pushP1(i);
+											 pushP1(i+bandera);
 											 break;
 											case 2:
-											 pushP2(i);
+											 pushP2(i+bandera);
 											 break;
 											case 3:
-											 pushP3(i);
+											 pushP3(i+bandera);
 											 break;
 											case 4: 
-											 pushP4(i);
+											 pushP4(i+bandera);
 											 break;
 										}
-							}					
+							}
+							bandera = bandera + c;	
+							printf("\n"); 	
+							Simulacion();	
 		  break;	  
-		  case 'n': Recorrer();  
+		  case 'n': 
+			Simulacion();
 		  break;
 		  case 's': exit(0);
-		  default: printf("\nSaliendo del programa...");
-		  return 0;
+		  default: printf("\nERORR! seleccione opccion");
 			}
 		}
+	}
+
+void Simulacion(){
+	int id,id1;
+	srand(time (NULL));
+			  int q = rand() % (5-1+1) + 1;
+			  int p = rand() % (3-1+1) + 1;
+			  id = popP();
+			  id1 = popCP(); 
+			  InsertarC(id,id1,q);	 
+			  Atender(25,56,p);	
+			  Atender(26,57,p);
+			  Atender(30,60,p);				 
+			  Recorrer();
+			  Graficar();
 }
 
 /*PILA 1*/
@@ -319,12 +349,13 @@ void InsertarC(int valor, int cliente, int turno){
 
 
 /*LISTA DOBLEMENTE ENLAZADA ORDENANDA*/
-void Insertar(int no_caja, char *estado, int no_cliente, int no_carreta, int no_atendido){
+void Insertar(int no_caja, char *estado, int no_cliente, int no_carreta, int no_atendido, int turno){
 	GNodo *nuevo = (GNodo *)malloc(sizeof(GNodo));
 		nuevo->no_caja = no_caja;
 		nuevo->no_cliente = no_cliente;
 		nuevo->no_carreta = no_carreta;
 		nuevo->no_atendido = no_atendido;
+		nuevo->turno = turno;
 		strcpy(nuevo->estado, estado);
 		
 			nuevo->seguente = NULL;
@@ -363,14 +394,49 @@ void Insertar(int no_caja, char *estado, int no_cliente, int no_carreta, int no_
 /*SACAR PILA*/
 int popP(void){ 
 			int x;
-			if (p1nodo==NULL){ 
-				printf("Lista vacia"); return EOF; }
+			if (p1nodo==NULL && p2nodo==NULL && p3nodo==NULL && p4nodo==NULL){ 
+				printf("NO HAY CARRETAS"); return EOF; }
 			else{
-				x = p1nodo->id;
-				p1nodo = p1nodo->before;
+					int j = rand() % (4-1+1) + 1;
+						switch(j){ 
+							case 1: 
+								x = p1nodo->id;
+								printf("%d",x);
+								p1nodo = p1nodo->before;
+							break;
+							case 2:
+								x = p2nodo->id;
+								printf("%d",x);
+								p2nodo = p2nodo->before;
+							break;
+							case 3:
+								x = p3nodo->id;
+								printf("%d",x);
+								p3nodo = p3nodo->before;
+							break;	
+							case 4:
+								x = p4nodo->id;
+								printf("%d",x);
+								p4nodo = p4nodo->before;
+							break;				
+						}
+					}					 
       return x;
 	  }
-    }
+
+/*SACAR COLA DE PRIORIDAD*/
+int popCP(void){
+	int h;
+		if (CPnodo==NULL){ 
+				printf("NO HAY CLIENTES"); return EOF; }
+			else{
+				h = CPnodo->cliente;
+				printf("%d",h);
+				CPnodo = CPnodo->siguiente;
+	}
+      return h;	
+}
+
 
 /*SACAR CIRCULAR*/
 void Extra(int turno1){
@@ -405,7 +471,19 @@ void Extra(int turno1){
 	}
 }
 
-
+/*Atender Cajas*/
+void Atender(int carreta, int cliente, int turno){
+ 	GNodo *temporal = lista;
+	while(strcmp(temporal->estado,"LIBRE") != 0  && temporal->seguente !=NULL) {
+ 		temporal = temporal->seguente;
+ 	}
+	if(strcmp(temporal->estado,"LIBRE") == 0){
+		strcpy(temporal->estado, "OCUPADO");
+		temporal->no_carreta = carreta;
+		temporal->no_cliente = cliente;
+		temporal->turno = turno;
+	}
+ }
 
 /*MOSTRAR ESTRUCTURAS*/
 void Recorrer(){
@@ -413,7 +491,7 @@ void Recorrer(){
 	GNodo *temp1 = p1nodo;		
 			while(temp1!=NULL)
 			{
-				printf("Número de Carreta: %d\n ", temp1->id);
+				printf("Número de Carreta pila1: %d\n ", temp1->id);
 				temp1 = temp1->before;
 			}
 			printf("\n");
@@ -421,7 +499,7 @@ void Recorrer(){
 	GNodo *temp2 = p2nodo;		
 			while(temp2!=NULL)
 			{
-				printf("Número de Carreta: %d\n ", temp2->id);
+				printf("Número de Carreta pila2: %d\n ", temp2->id);
 				temp2 = temp2->before;
 			}
 			printf("\n");
@@ -429,7 +507,7 @@ void Recorrer(){
 	GNodo *temp3 = p3nodo;
 			while(temp3!=NULL)
 			{
-				printf("Número de Carreta: %d\n ", temp3 ->id);
+				printf("Número de Carreta pila3: %d\n ", temp3 ->id);
 				temp3  = temp3->before;
 			}
 			printf("\n");
@@ -437,16 +515,16 @@ void Recorrer(){
 	GNodo *tempPila = p4nodo;		
 			while(tempPila!=NULL)
 			{
-				printf("Número de Carreta: %d\n ", tempPila->id);
+				printf("Número de Carreta pila4: %d\n ", tempPila->id);
 				tempPila = tempPila->before;
 			}
 			printf("\n");
 			
-	GNodo *temp = CPnodo;
-		while(temp!=NULL)
+	GNodo *tempM = CPnodo;
+		while(tempM!=NULL)
 			{
-				printf("No. Cliente: %d\n Edad Cliente: %d\n Genero Cliente: %s\n\n ", temp->cliente, temp->edad, temp->genero);
-				temp = temp->siguiente;
+				printf("No. Cliente: %d\n Edad Cliente: %d\n Genero Cliente: %s\n\n ", tempM->cliente, tempM->edad, tempM->genero);
+				tempM = tempM->siguiente;
 			}
 			printf("\n");
 
@@ -478,10 +556,100 @@ void Recorrer(){
 		GNodo *temporal = lista;
 		
 		while(temporal->seguente!=NULL){
-			printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
+			printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n Turnos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido, temporal->turno);
 			temporal = temporal->seguente;
 		}
 		
-		printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
+		printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n Turnos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido, temporal->turno);
 				
 }
+
+void Graficar(){
+	
+	
+	FILE* grafico = fopen("Grafico.dot","w+");
+
+	fprintf(grafico,"digraph {\n");
+	
+		fprintf(grafico, "subgraph cluster_1{");
+		fprintf(grafico,"style = filled;");
+	    fprintf(grafico,"node[shape=record,rankdir=LR]; \n");
+        fprintf(grafico,"node1 [label = \"{Pila 1 \n");
+        
+		GNodo *tempG1 = p1nodo;		
+			while(tempG1!=NULL)
+			{
+				fprintf(grafico,"|Carreta: %d\n ", tempG1->id);
+				tempG1 = tempG1->before;
+			}
+
+		fprintf(grafico, "}\"];");
+		fprintf(grafico,"\n}");//<-----grafica pila1
+		
+		fprintf(grafico, "subgraph cluster_2{");
+		fprintf(grafico,"style = filled;");
+	    fprintf(grafico,"node[shape=record,rankdir=LR]; \n");
+        fprintf(grafico,"node2 [label = \"{Pila 2 \n");
+        
+		GNodo *tempG2 = p2nodo;		
+			while(tempG2!=NULL)
+			{
+				fprintf(grafico,"|Carreta: %d\n ", tempG2->id);
+				tempG2 = tempG2->before;
+			}
+
+		fprintf(grafico, "}\"];");
+		fprintf(grafico,"\n}");//<-----grafica pila2
+
+		fprintf(grafico, "subgraph cluster_3{");
+		fprintf(grafico,"style = filled;");
+	    fprintf(grafico,"node[shape=record,rankdir=LR]; \n");
+        fprintf(grafico,"node3 [label = \"{Pila 3 \n");
+        
+		GNodo *tempG3 = p3nodo;		
+			while(tempG3!=NULL)
+			{
+				fprintf(grafico,"|Carreta: %d\n ", tempG3->id);
+				tempG3 = tempG3->before;
+			}
+
+		fprintf(grafico, "}\"];");
+		fprintf(grafico,"\n}");//<-----grafica pila3
+
+		fprintf(grafico, "subgraph cluster_4{");
+		fprintf(grafico,"style = filled;");
+	    fprintf(grafico,"node[shape=record,rankdir=LR]; \n");
+        fprintf(grafico,"node4 [label = \"{Pila 4 \n");
+        
+		GNodo *tempG4 = p4nodo;		
+			while(tempG4!=NULL)
+			{
+				fprintf(grafico,"|Carreta: %d\n ", tempG4->id);
+				tempG4 = tempG4->before;
+			}
+
+		fprintf(grafico, "}\"];");
+		fprintf(grafico,"\n}");//<-----grafica pila4	
+	
+			//Grafica de cola de prioridad
+			fprintf(grafico, "subgraph cluster_0{");
+			fprintf(grafico, "style=filled;");
+			fprintf(grafico, "label=\"COLA DE PRIORIDAD\";");
+			fprintf(grafico, "node [ shape = record; rankdir=TB;];");
+			fprintf(grafico, "node0 [ label = \" ");
+			
+		GNodo *temp = CPnodo;
+		while(temp!=NULL)
+			{
+				fprintf(grafico,"| Cliente:%d\\nEdad:%d\\nGenero:%s ", temp->cliente, temp->edad, temp->genero);
+				temp = temp->siguiente;
+			}
+			
+			fprintf(grafico,"\n \"];");
+			fprintf(grafico,"\n}");//<-----termina grafica cola 
+		
+			fprintf(grafico,"\n}");
+			            fclose(grafico);
+			            system("dot -Tjpg Grafico.dot -o cola.jpg");
+}
+
