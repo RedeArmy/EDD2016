@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define false 0
 #define true 1
 
@@ -15,7 +16,7 @@ typedef struct Nodo
 {
 	int no_caja, no_atendido, no_carreta, no_cliente;
 	char estado[25], genero[25];
-	int valor, edad;
+	int valor, edad, cliente, turno;
 	int id;
 	bool gestando;
 	struct Nodo *seguente;
@@ -62,75 +63,112 @@ int main(){
 	p4nodo = NULL;
 	circular1 = NULL;
 	circular2 = NULL;
-	
-	Insertar(3,"LIBRE",6,7,3);
-	Insertar(1,"OCUPADO",7,2,6);
-	
-	InsertarC(4);
-	InsertarC(0);
-	InsertarC(0);
-	InsertarC(0);
-	InsertarC(7);
+
+	pushC(12);
+	pushC(4);
+	pushC(25);
 
 	
-	pushCP(12, "HOMBRE");
-	pushCP(18, "HOMBRE");
-
-	pushP1(50);
-	pushP1(1);
-	
-	pushP2(25);
-	pushP2(7);
-	pushP2(2);
-	
-	  char m,c;
-      int k,r,t,y,i,h,f;
-      printf("------- SIMULACION DEL SISTEMA SUPERMECADO------- \n");
+      int k,r,t,h,c;
+ 
+      printf("------- SIMULACIÓN DEL SISTEMA DE SUPERMECADO------- \n");
       
-		  printf("1) Ingresar Número de Carretas \n"); 
-		  printf("2) Ingresar Número de Clientes en Cola de Espera \n"), 
-		  printf("3) Cantidad de clientes comprando \n");  
-		  printf("4) Salir [s] \n");
+		  printf("Ingresar Cantidad de Carretas \n"); 
+		  scanf("%d", &k);
+		  
+			for(int i = 1; i<=k; i++){
+					int j = rand() % (4-1+1) + 1;
+							 switch(j){ 
+								case 1: 
+								 pushP1(i);
+								 break;
+								case 2:
+								 pushP2(i);
+								 break;
+								case 3:
+								 pushP3(i);
+								 break;
+								case 4: 
+								 pushP4(i);
+								 break;
+							}
+				}
+				
+		  printf("Ingresar Cantidad de Clientes en Cola de Espera \n"), 
+		  scanf("%d", &r);
+		  
+			  for(int i = 1; i<=r; i++){
+						int j = rand() % (2-1+1) + 1;
+								 switch(j){ 
+									int w;
+									case 1: 
+									 w = rand() % (80-15+1) + 15;
+									 pushCP(i,w, "HOMBRE");
+									 break;
+									case 2:
+									 w = rand() % (80-15+1) + 15;
+									 pushCP(i,w, "MUJER");
+									 break;
+								}
+				}
+				
+	      printf("Ingresar Cantidad de Clientes Comprando \n"); 
+		  scanf("%d", &t);
+		  	    for(int i = 1; i<=t; i++){
+							int o,p,q; 
+							o = rand() % (100-50+1) + 50;
+							p = rand() % (100-50+1) + 50;
+							q = rand() % (5-1+1) + 1;
+							InsertarC(o,p,q);		 				 
+				}
+				
+		  printf("Ingresar Cantidad de Cajas \n");  
+		  scanf("%d", &h);
+		        for(int i = 1; i<=h; i++){
+							Insertar(i,"LIBRE",0,0,0);		 				 
+				}
+		  
+Recorrer(); 
+		  /*
+		  printf("Ingresar Cantidad de Clientes en Cola de Pagos \n"); 
+		  scanf("%d", &y);
+		  printf("Ingresar Cantidad de Clientes en Cola de “Ciudadanos de Oro” \n");
+		  scanf("%d", &i);  
+*/
       
 		  while(1){
-		  printf("[a], [e], [m] o [s]: ");
-		  m=getchar();
+		  printf("Desea Ingresar Mas Carretas? SI [y], NO [n] o SALIR[s]: ");
+		  char m=getchar();
 		  getchar();
 		  
 		  switch(m){
-		  case 'a': printf("Introduzca Número de Departamento: ");
-					scanf("%d", &k); getchar(); 
-					printf("Introduzca Nombre del departamento: ");
-					scanf("%s", &c); getchar(); 
-					printf("Introduzca Número de empleados libres: ");
-					scanf("%d", &r); getchar(); 
-					printf("Introduzca Número de empleados ocupados: ");
-					scanf("%d", &t); getchar(); 
-					printf("Introduzca Número de clientes que están siendo atendidos: ");
-					scanf("%d", &y); getchar(); 
-					printf("Introduzca Número de clientes que han atendido: ");
-					scanf("%d", &i); getchar(); 
-					printf("Introduzca Número de empleados que pertenecen a este departamento: ");
-					scanf("%d", &h); getchar(); 
-					printf("Introduzca Cantidad de documentos procesados en total: ");
-					scanf("%d", &f); getchar(); 
-					
-					Insertar(k); 		
-					Recorrer(); 
-		  break;
-		  case 'e': 
-		  /*popP();*/
-		  Extra(0); 
-		  Recorrer();  
-		  break;
-		  case 'm': Recorrer();  
+		  case 'y': printf("\nIngresar Cantidad de Carretas \n"); 
+					scanf("%d", &c);
+						for(int i = k; i<=c; i++){
+								int j = rand() % (4-1+1) + 1;
+										 switch(j){ 
+											case 1: 
+											 pushP1(i);
+											 break;
+											case 2:
+											 pushP2(i);
+											 break;
+											case 3:
+											 pushP3(i);
+											 break;
+											case 4: 
+											 pushP4(i);
+											 break;
+										}
+							}					
+		  break;	  
+		  case 'n': Recorrer();  
 		  break;
 		  case 's': exit(0);
 		  default: printf("\nSaliendo del programa...");
 		  return 0;
 			}
 		}
-	return 0;
 }
 
 /*PILA 1*/
@@ -174,9 +212,10 @@ void pushP4(int id){
 }
 
 /*COLA DE PRIORIDAD*/
-void pushCP(int edad, char *genero){ 
+void pushCP(int cliente, int edad, char *genero){ 
 	GNodo *actual = (GNodo *)malloc(sizeof(GNodo));
 	GNodo *nuevo = (GNodo *)malloc(sizeof(GNodo));
+	nuevo->cliente = cliente;
 	nuevo->edad = edad;
 	strcpy(nuevo->genero, genero);
 
@@ -211,10 +250,31 @@ void pushCP(int edad, char *genero){
 			}
 }
 
+/*COLA CLIENTES NORMALES*/
+void pushC(int cliente){ 
+	GNodo *presente = (GNodo *)malloc(sizeof(GNodo));
+	GNodo *new = (GNodo *)malloc(sizeof(GNodo));
+	new->cliente = cliente;
+
+		    new->siguiente = NULL;
+			presente->siguiente = NULL;
+
+	while(new->siguiente != NULL)
+    cnodo=cnodo->siguiente;
+
+	new->siguiente = NULL;
+    new->siguiente = cnodo;
+	new = cnodo;
+}
+
 /*LISTA CIRCULAR SIMPLEMENTE ENLAZADA*/
-void InsertarC(int valor){
+void InsertarC(int valor, int cliente, int turno){
 	GNodo *nuevo = (GNodo *)malloc(sizeof(GNodo));
 	nuevo->valor = valor;
+	nuevo->cliente = cliente;
+	nuevo->turno = turno;
+	
+	
 	if(circular1 == NULL) {
 		circular1 = circular2 = nuevo;
 	} else {
@@ -225,7 +285,6 @@ void InsertarC(int valor){
 	}
 	
 }
-
 
 
 /*LISTA DOBLEMENTE ENLAZADA ORDENANDA*/
@@ -283,31 +342,28 @@ int popP(void){
     }
 
 /*SACAR CIRCULAR*/
-void Extra(int turno){
+void Extra(int turno1){
 	GNodo *anterior = circular1;
 	GNodo *temp = circular1;
 	if(circular1 == circular2){
 		circular1 = circular2 = NULL;
-		printf("Nada\n");
 	}
 	else {
-		if(circular2->valor == turno){
+		if(circular2->turno == turno1){
 			while(temp != circular2){
 				anterior = temp;
 				temp = temp->siguiente;
 			}
 			anterior->siguiente = circular1;
 			circular2 = anterior;
-			Extra(turno);
-		} else if(circular1->valor == turno){
+			Extra(turno1);
+		} else if(circular1->turno == turno1){
 			circular2->siguiente = circular1->siguiente;
 			circular1 = circular1->siguiente;
-			//printf("Llamada recursiva\n");
-			Extra(turno);
+			Extra(turno1);
 		} else {
-			//printf("Llamada recursiva --\n");
 			while(temp != circular2){
-				if(temp->valor == turno){
+				if(temp->turno == turno1){
 					anterior->siguiente = temp->siguiente;
 					temp = anterior;
 				}
@@ -322,23 +378,7 @@ void Extra(int turno){
 
 /*MOSTRAR ESTRUCTURAS*/
 void Recorrer(){
-	GNodo *temporal = lista;
 	
-	while(temporal->seguente!=NULL){
-		printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
-		temporal = temporal->seguente;
-	}
-	
-	printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
-	
-	GNodo *temp = CPnodo;
-		while(temp!=NULL)
-			{
-				printf("Edad Cliente: %d\n Genero Cliente: %s\n\n ", temp->edad, temp->genero);
-				temp = temp->siguiente;
-			}
-			printf("\n");
-
 	GNodo *temp1 = p1nodo;		
 			while(temp1!=NULL)
 			{
@@ -363,21 +403,47 @@ void Recorrer(){
 			}
 			printf("\n");
 			
-	GNodo *temp4 = p4nodo;		
-			while(temp4!=NULL)
+	GNodo *tempPila = p4nodo;		
+			while(tempPila!=NULL)
 			{
-				printf("Número de Carreta: %d\n ", temp4->id);
-				temp4 = temp4->before;
+				printf("Número de Carreta: %d\n ", tempPila->id);
+				tempPila = tempPila->before;
 			}
 			printf("\n");
 			
+	GNodo *temp = CPnodo;
+		while(temp!=NULL)
+			{
+				printf("No. Cliente: %d\n Edad Cliente: %d\n Genero Cliente: %s\n\n ", temp->cliente, temp->edad, temp->genero);
+				temp = temp->siguiente;
+			}
+			printf("\n");
+
 	GNodo *tempC = circular1;		
 			while(tempC != circular2)
 			{
-				printf("Comprador: %d\n ", tempC->valor);
+				printf("No Carreta: %d\n No. Cliente: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->turno);
 				tempC = tempC->siguiente;
 			}
-			printf("Comprador: %d\n ", tempC->valor);
+			printf("No Carreta: %d\n No. Cliente: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->turno);
+			printf("\n");
+
+	GNodo *temporal = lista;
+	
+	while(temporal->seguente!=NULL){
+		printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
+		temporal = temporal->seguente;
+	}
+	
+	printf("No Caja: %d\n Estado: %s\n Cliente Atendido: %d\n Número de Carreta: %d\n Número de Clientes Atendidos: %d\n\n ", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido);
+			
+			
+	  GNodo *tempCOLA = cnodo;		
+		while(tempCOLA!=NULL)
+			{
+				printf("Número de Cliente: %d\n ", tempCOLA->cliente);
+				tempCOLA = tempCOLA->siguiente;
+			}
 			printf("\n");
 			
 }
