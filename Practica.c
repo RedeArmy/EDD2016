@@ -58,7 +58,7 @@ void pushP3();
 void pushP4();
 void Atender();
 int popP(void);
-int popCP(void);
+int *popCP(void);
 void Extra(int);
 void Graficar();
 
@@ -122,30 +122,33 @@ int main(){
 	      printf("Ingresar Cantidad de Clientes Comprando \n"); 
 		  scanf("%d", &l);
 		  	    for(int i = 1; i<=l; i++){
-							int o,p,q; 
+							int o,p,q,r; 
 							o = rand() % (100-50+1) + 50;
 							p = rand() % (100-50+1) + 50;
-							q = rand() % (5-1+1) + 1;
-							InsertarC(o,p,q);		 				 
+							q = rand() % (90-18+1) + 18;
+							r = rand() % (5-1+1) + 1;
+							InsertarC(o,p,q,r);		 				 
 				}
 				
 		  printf("Ingresar Cantidad de Clientes en Cola de Pagos \n"); 
 		  scanf("%d", &z);
 		     for(int i = 1; i<=z; i++){
-							int o,p; 
+							int o,p,q; 
 							o = rand() % (100-50+1) + 50;
 							p = rand() % (100-50+1) + 50;
-							pushCN(o,p);		 				 
+							q = rand() % (100-50+1) + 50;
+							pushCN(o,p,q);		 				 
 				}
 				
 		  printf("Ingresar Cantidad de Clientes en Cola de “Ciudadanos de Oro” \n");
 		  scanf("%d", &v); 
 		   
 		  	 for(int i = 1; i<=v; i++){
-							int o,p; 
+							int o,p,q; 
 							o = rand() % (100-50+1) + 50;
 							p = rand() % (100-50+1) + 50;
-							pushCO(o,p);		 				 
+							q = rand() % (100-50+1) + 50;
+							pushCO(o,p,q);		 				 
 				}
 				
 		  printf("Ingresar Cantidad de Cajas \n");  
@@ -200,14 +203,16 @@ void Agregar(int bandera){
 	}
 
 void Simulacion(){
-	int id,id1; 
+	int id;
+	int *id1 = (int *)malloc(sizeof(int) * 2);
 	id = 0;
-	id1 = 0;
 	srand(time (NULL));
-			  int q = rand() % (5-1+1) + 1;
+	  int q = rand() % (5-1+1) + 1;
 			  id = popP();
-			  id1 = popCP(); 
-			  InsertarC(id,id1,q);	 
+			  id1 = popCP();
+			  
+			  InsertarC(id,id1[0],id1[1],q);	 
+			  
 			  Reducir();
 			  Extra(0);				 
 			  Recorrer();
@@ -294,11 +299,12 @@ void pushCP(int cliente, int edad, char *genero){
 }
 
 /*COLA CLIENTES NORMALES*/
-void pushCN(int cliente, int valor){ 
+void pushCN(int cliente, int edad, int valor){ 
 	GNodo *new = (GNodo *)malloc(sizeof(GNodo));
 	GNodo *temp = CNnodo;
 	new->cliente = cliente;
 	new->valor = valor;
+	new->edad = edad;
 	new->siguiente = NULL;
 	
 	if(CNnodo == NULL)
@@ -312,11 +318,12 @@ void pushCN(int cliente, int valor){
 }
 
 /*COLA CLIENTES ORO*/
-void pushCO(int cliente, int valor){ 
+void pushCO(int cliente, int edad, int valor){ 
 	GNodo *new = (GNodo *)malloc(sizeof(GNodo));
 	GNodo *temp = COnodo;
 	new->cliente = cliente;
 	new->valor = valor;
+	new->edad = edad;
 	new->siguiente = NULL;
 	
 	if(COnodo == NULL)
@@ -330,10 +337,11 @@ void pushCO(int cliente, int valor){
 }
 
 /*LISTA CIRCULAR SIMPLEMENTE ENLAZADA*/
-void InsertarC(int valor, int cliente, int turno){
+void InsertarC(int valor, int cliente, int edad, int turno){
 	GNodo *nuevo = (GNodo *)malloc(sizeof(GNodo));
 	nuevo->valor = valor;
 	nuevo->cliente = cliente;
+	nuevo->edad = edad;
 	nuevo->turno = turno;
 	
 	
@@ -446,16 +454,16 @@ int popP(void){
 	  }
 
 /*SACAR COLA DE PRIORIDAD*/
-int popCP(void){
-	int h;
+int *popCP(void){
+	int *h = (int *)malloc(sizeof(int)*2);
 		if (CPnodo==NULL){ 
-				printf("NO HAY CLIENTES"); return EOF; }
+				printf("NO HAY CLIENTES"); }
 			else{
-				h = CPnodo->cliente;
-				printf("%d",h);
+				h[0] = CPnodo->cliente;
+				h[1] = CPnodo->edad;
 				CPnodo = CPnodo->siguiente;
 	}
-      return h;	
+     return h;		
 }
 
 /*DECRECER TURNOS*/
@@ -572,16 +580,16 @@ void Recorrer(){
 	 GNodo *tempC = circular1;		
 			while(tempC != circular2)
 			{
-				printf("No Carreta: %d\n No. Cliente: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->turno);
+				printf("No Carreta: %d\n No. Cliente: %d\n Edad: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
 				tempC = tempC->siguiente;
 			}
-			printf("No Carreta: %d\n No. Cliente: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->turno);
+			printf("No Carreta: %d\n No. Cliente: %d\n Edad: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
 			printf("\n");
 			
 	  GNodo *tempCN = COnodo;		
 		while(tempCN!=NULL)
 			{
-				printf("Número de Cliente: %d\n Número de Carreta: %d\n\n ", tempCN->cliente, tempCN->valor);
+				printf("Número de Cliente: %d\n Edad: %d\n úmero de Carreta: %d\n\n ", tempCN->cliente, tempCN->edad, tempCN->valor);
 				tempCN = tempCN->siguiente;
 			}
 			printf("\n");
@@ -589,7 +597,7 @@ void Recorrer(){
 	  GNodo *tempCO = CNnodo;		
 		while(tempCO!=NULL)
 			{
-				printf("Número de Cliente: %d\n Número de Carreta: %d\n\n ", tempCO->cliente, tempCO->valor);
+				printf("Número de Cliente: %d\n Edad: %d\n Número de Carreta: %d\n\n ", tempCO->cliente, tempCO->edad, tempCO->valor);
 				tempCO = tempCO->siguiente;
 			}
 			printf("\n");
@@ -686,11 +694,47 @@ void Graficar(){
 				temp = temp->siguiente;
 			}
 			
-			fprintf(grafico,"\n \"];");
-			fprintf(grafico,"\n}");//<-----termina grafica cola 
-		
+		   fprintf(grafico,"\n \"];");
+		   fprintf(grafico,"\n}");//<-----termina grafica cola 
+			
+			//Grafica de cola de espera normal
+			fprintf(grafico, "subgraph cluster_5{");
+			fprintf(grafico, "style=filled;");
+			fprintf(grafico, "label=\"COLA DE ESPERA NORMAL\";");
+			fprintf(grafico, "node [ shape = record; rankdir=TB;];");
+			fprintf(grafico, "node5 [ label = \" ");
+			
+	  GNodo *tempCO = CNnodo;		
+		while(tempCO!=NULL)
+			{
+				fprintf(grafico,"|Cliente: %d\\nEdad: %d\\nCarreta: %d ", tempCO->cliente, tempCO->edad, tempCO->valor);
+				tempCO = tempCO->siguiente;
+			}
+			
+		   fprintf(grafico,"\n \"];");
+		   fprintf(grafico,"\n}");//<-----termina grafica cola 
+
+
+			//Grafica de cola de espera oro
+			fprintf(grafico, "subgraph cluster_6{");
+			fprintf(grafico, "style=filled;");
+			fprintf(grafico, "label=\"COLA DE ESPERA ORO\";");
+			fprintf(grafico, "node [ shape = record; rankdir=TB;];");
+			fprintf(grafico, "node6 [ label = \" ");
+			
+	  GNodo *tempCN = CNnodo;		
+		while(tempCN!=NULL)
+			{
+				fprintf(grafico,"|Cliente: %d\\nEdad: %d\\nCarreta: %d ", tempCN->cliente, tempCN->edad, tempCN->valor);
+				tempCN= tempCN->siguiente;
+			}
+			
+		   fprintf(grafico,"\n \"];");
+		   fprintf(grafico,"\n}");//<-----termina grafica cola 
+
 			fprintf(grafico,"\n}");
 			            fclose(grafico);
-			            system("dot -Tjpg Grafico.dot -o cola.jpg");
+			            system("dot -Tjpg Grafico.dot -o Practica1.jpg");
+			            system("gnome-open Practica1.jpg");
 }
 
