@@ -46,6 +46,7 @@ GNodo *circular2;
 void Insertar();
 void InsertarC();
 void Recorrer();
+void Reducir();
 void Agregar();
 void Simulacion();
 void pushCO();
@@ -199,16 +200,16 @@ void Agregar(int bandera){
 	}
 
 void Simulacion(){
-	int id,id1;
+	int id,id1; 
+	id = 0;
+	id1 = 0;
 	srand(time (NULL));
 			  int q = rand() % (5-1+1) + 1;
-			  int p = rand() % (3-1+1) + 1;
 			  id = popP();
 			  id1 = popCP(); 
 			  InsertarC(id,id1,q);	 
-			  Atender(25,56,p);	
-			  Atender(26,57,p);
-			  Atender(30,60,p);				 
+			  Reducir();
+			  Extra(0);				 
 			  Recorrer();
 			  Graficar();
 }
@@ -394,33 +395,53 @@ void Insertar(int no_caja, char *estado, int no_cliente, int no_carreta, int no_
 /*SACAR PILA*/
 int popP(void){ 
 			int x;
+	        int opc = 1;
+	        
 			if (p1nodo==NULL && p2nodo==NULL && p3nodo==NULL && p4nodo==NULL){ 
 				printf("NO HAY CARRETAS"); return EOF; }
 			else{
+				do{
 					int j = rand() % (4-1+1) + 1;
 						switch(j){ 
-							case 1: 
+							case 1:
+							if(p1nodo!=NULL){ 
 								x = p1nodo->id;
 								printf("%d",x);
 								p1nodo = p1nodo->before;
+								opc = 0;
+							}
+							else {opc =1;}
 							break;
 							case 2:
+							if(p2nodo!=NULL){ 
 								x = p2nodo->id;
 								printf("%d",x);
 								p2nodo = p2nodo->before;
+								opc = 0;
+							}
+							else {opc =1;}
 							break;
 							case 3:
+							if(p3nodo!=NULL){ 
 								x = p3nodo->id;
 								printf("%d",x);
 								p3nodo = p3nodo->before;
+								opc = 0;
+							}
+							else {opc =1;}				
 							break;	
 							case 4:
+							if(p4nodo!=NULL){ 
 								x = p4nodo->id;
 								printf("%d",x);
 								p4nodo = p4nodo->before;
-							break;				
-						}
-					}					 
+								opc = 0;
+							}
+							else {opc =1;}	
+							break;
+						}			
+					} while(opc!=0);
+				}					 
       return x;
 	  }
 
@@ -435,6 +456,25 @@ int popCP(void){
 				CPnodo = CPnodo->siguiente;
 	}
       return h;	
+}
+
+/*DECRECER TURNOS*/
+void Reducir(){
+	GNodo *tempo = circular1;
+
+	while(tempo != circular2 ) {
+		if(tempo->turno > 0){
+			tempo->turno = tempo->turno - 1;
+		}
+		
+ 		tempo = tempo->siguiente;
+ 	}
+ 	
+	if(circular2->turno > 0)
+		circular2->turno = circular2->turno - 1;
+		 else{
+			Extra(0);
+		}
 }
 
 
@@ -471,8 +511,8 @@ void Extra(int turno1){
 	}
 }
 
-/*Atender Cajas*/
-void Atender(int carreta, int cliente, int turno){
+/*ATENDER CAJA*/
+void Atender(int carreta, int cliente, int turno, int no_atendido){
  	GNodo *temporal = lista;
 	while(strcmp(temporal->estado,"LIBRE") != 0  && temporal->seguente !=NULL) {
  		temporal = temporal->seguente;
@@ -481,6 +521,7 @@ void Atender(int carreta, int cliente, int turno){
 		strcpy(temporal->estado, "OCUPADO");
 		temporal->no_carreta = carreta;
 		temporal->no_cliente = cliente;
+		temporal->no_atendido = no_atendido;
 		temporal->turno = turno;
 	}
  }
