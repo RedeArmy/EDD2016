@@ -42,7 +42,6 @@ GNodo *p4nodo;
 GNodo *circular1;
 GNodo *circular2;
 
-
 void Insertar();
 void InsertarC();
 void Recorrer();
@@ -60,12 +59,14 @@ void pushP4();
 void Atender();
 int obtenerCarreta();
 int Contador();
+int ContadorCompras();
 int popP(void);
 int *popCP(void);
 int *popCN(void);
 int *popCO(void);
 void Extra(int);
 void sacarCarreta();
+void sacarComprador();
 void ExtraC();
 void Graficar();
 
@@ -236,9 +237,8 @@ void Simulacion(){
 			  oro = popCO();
 			  Atender(oro[0],oro[1],z); 
 		  }
-			  sacarCarreta();
-			  ReducirTC();
-			  Extra(0);			 
+			  sacarComprador();
+			  sacarCarreta();		 
 			  Recorrer();
 			  Graficar();
 }
@@ -587,6 +587,7 @@ int obtenerCarreta(){
 	return carreta;
 }
 
+
 /*DECRECER TURNOS DOBLEMEMTENTE ENLAZADA*/
 void ReducirTDE(){
 	GNodo *temporal  = lista;
@@ -601,6 +602,49 @@ void ReducirTDE(){
 	 
 }
 
+/*SACAR CIRCULAR*/
+GNodo *getCompras(int turno1){
+	if(circular1->turno == turno1) 
+		return circular1;
+	if(circular2->turno == turno1) 
+		return circular2;
+	GNodo *temporal = circular1;
+	while(temporal!=circular2 && temporal->turno != turno1){ 
+		temporal = temporal->siguiente;
+	}
+	if(temporal->turno == turno1)
+		return temporal;
+	else 
+		return (GNodo *)NULL;
+}
+
+/* SACAR COMPRADOR DE LISTA DE COMPRAS*/
+void sacarComprador(){
+	
+	ReducirTC();
+	
+	int contador = ContadorCompras();
+	int x = 0;
+	while(x < contador){
+		
+		GNodo *cliente = getCompras(0);
+		Extra(0);
+		int carreta = cliente->valor; 
+		int cliente1 = cliente->cliente;
+		int edad = cliente->edad;
+		
+		if(edad >= 65){
+			pushCO(cliente1,edad,carreta);	
+	    }
+	    else {
+			pushCN(cliente1,edad,carreta);
+		}
+		
+		x = x + 1;
+	}
+			  	
+}
+
 /*DECRECER TURNOS CIRCULAR SIMPLE*/
 void ReducirTC(){
 	GNodo *tempo = circular1;
@@ -609,19 +653,29 @@ void ReducirTC(){
 		if(tempo->turno > 0){
 			tempo->turno = tempo->turno - 1;
 		}
-		
  		tempo = tempo->siguiente;
  	}
  	
 	if(circular2->turno > 0)
 		circular2->turno = circular2->turno - 1;
-		 else{
-			Extra(0);
-		}
-		
 }
 
-/*SACAR CIRCULAR*/
+
+/*CONTADOR DE CLINETES EN COMPRAS*/
+int ContadorCompras(){
+	int contador = 0;
+	GNodo *temp1  = circular1;
+
+	while(temp1->siguiente != circular1 ) {
+		if(temp1->turno == 0){
+			contador = contador + 1;
+		}
+ 		temp1 = temp1->siguiente;
+ 	}
+	return contador;
+}
+
+/*ELIMINAR NODO CIRCULAR*/
 void Extra(int turno1){
 	GNodo *anterior = circular1;
 	GNodo *temp = circular1;
@@ -636,16 +690,17 @@ void Extra(int turno1){
 			}
 			anterior->siguiente = circular1;
 			circular2 = anterior;
-			Extra(turno1);
+			//Extra(turno1);
 		} else if(circular1->turno == turno1){
 			circular2->siguiente = circular1->siguiente;
 			circular1 = circular1->siguiente;
-			Extra(turno1);
+			//Extra(turno1);
 		} else {
 			while(temp != circular2){
 				if(temp->turno == turno1){
 					anterior->siguiente = temp->siguiente;
 					temp = anterior;
+					return;
 				}
 				anterior = temp;
 				temp = temp->siguiente;
