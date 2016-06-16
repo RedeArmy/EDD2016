@@ -84,7 +84,7 @@ int main(){
 	circular2 = NULL;
 
 	
-      int k,r,l,h,z,v;
+      int k,r,l,a,z,v;
  
       printf("------- SIMULACIÓN DEL SISTEMA DE SUPERMECADO------- \n");
       
@@ -163,13 +163,15 @@ int main(){
 				}
 				
 		  printf("Ingresar Cantidad de Cajas \n");  
-		  scanf("%d", &h);
-		  srand(time (NULL));
-		        for(int i = 1; i<=h; i++){
+		  scanf("%d", &a);
+		  int random = a;
+		        for(int n = 1; n<=random; n++){
 					int u = rand() % (50-1+1) + 1;
 							Insertar(u,"LIBRE",0,0,0,0);		 				 
-  		}
+  		         }
+  		
 Graficar();
+Recorrer();
 Agregar(dato); 
 }
 
@@ -965,7 +967,7 @@ void Graficar(){
 		   fprintf(grafico, "label=\"LISTA DOBLEMENTE ENLAZADA\";");
 		   fprintf(grafico, "node [ shape = record; rankdir=TB;];");
 
-			GNodo *temporal = lista;
+		GNodo *temporal = lista;
 			int nodoLista = 200;
 			
 			while(temporal->seguente != NULL)
@@ -992,10 +994,8 @@ void Graficar(){
 			while(nodoLista>200)
 			{
 				fprintf(grafico, "node%d -> node%d;", nodoLista, nodoLista - 1);
-				//temporal = temporal->precedente;
 				nodoLista = nodoLista - 1;
 			}
-			//fprintf(grafico, "node%d -> node%d;", nodoLista, 200);
 			
 		    fprintf(grafico,"\n}");//<-----termina grafica lista doblemente enlazada
 
