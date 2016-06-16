@@ -989,13 +989,13 @@ void Graficar(){
 				nodoLista = nodoLista + 1;
 			}         
 			
-			while(temporal->precedente != NULL)
+			while(nodoLista>200)
 			{
 				fprintf(grafico, "node%d -> node%d;", nodoLista, nodoLista - 1);
-				temporal = temporal->precedente;
+				//temporal = temporal->precedente;
 				nodoLista = nodoLista - 1;
-			}  
-			fprintf(grafico, "node%d -> node%d;", nodoLista, 200);
+			}
+			//fprintf(grafico, "node%d -> node%d;", nodoLista, 200);
 			
 		    fprintf(grafico,"\n}");//<-----termina grafica lista doblemente enlazada
 
