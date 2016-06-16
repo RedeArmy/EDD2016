@@ -166,7 +166,7 @@ int main(){
 		  scanf("%d", &h);
 		  srand(time (NULL));
 		        for(int i = 1; i<=h; i++){
-					int u = rand() % (100-50+1) + 50;
+					int u = rand() % (50-1+1) + 1;
 							Insertar(u,"LIBRE",0,0,0,0);		 				 
   		}
 Graficar();
@@ -228,9 +228,13 @@ void Simulacion(){
 
 			  id = popP();//<------Capta el valor eliminado de la pila
 			  id1 = popCP();//<----Capta el valor eliminado de la cola de prioridad 
-			  
+			
+		if(id != 0){
+		  if(id1[0] != NULL && id1[1] != NULL){
 			  InsertarC(id,id1[0],id1[1],q);//<-----Inserta valores en la lista circular
-			  
+		  }
+	  }
+		  
 		/* Verifica si cola de ORO esta visia, sino toma de cola normal*/	  
 		GNodo *tempCO = COnodo;
 		  if (tempCO==NULL){
