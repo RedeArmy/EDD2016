@@ -69,6 +69,7 @@ void sacarCarreta();
 void sacarComprador();
 void ExtraC();
 void Graficar();
+void Archivo();
 
 int main(){
 	lista = NULL;
@@ -163,8 +164,10 @@ int main(){
 				
 		  printf("Ingresar Cantidad de Cajas \n");  
 		  scanf("%d", &h);
+		  srand(time (NULL));
 		        for(int i = 1; i<=h; i++){
-							Insertar(i,"LIBRE",0,0,0,0);		 				 
+					int u = rand() % (100-50+1) + 50;
+							Insertar(u,"LIBRE",0,0,0,0);		 				 
   		}
 Graficar();
 Agregar(dato); 
@@ -802,8 +805,7 @@ void Recorrer(){
 				
 }
 
-void Graficar(){
-	
+void Graficar(){	
 	
 	FILE* grafico = fopen("Grafico.dot","w+");
 
@@ -885,6 +887,39 @@ void Graficar(){
 			
 		   fprintf(grafico,"\n \"];");
 		   fprintf(grafico,"\n}");//<-----termina grafica cola 
+
+		   //Grafica de lista circular
+	       fprintf(grafico, "subgraph cluster_7{");
+		   fprintf(grafico, "style=filled;");
+		   fprintf(grafico, "label=\"LISTA CIRCULAR\";");
+		   fprintf(grafico, "node [ shape = record; rankdir=TB;];");
+
+			GNodo *tempC = circular1;
+			int nodoGrafico = 100;
+			
+			while(tempC->siguiente != circular1)
+			{
+				fprintf(grafico, "node%d [ label = \" ",nodoGrafico);
+				fprintf(grafico,"Carreta: %d\\nCliente: %d\\nEdad: %d\\nTurno: %d", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
+				fprintf(grafico,"\"]; \n ");
+				tempC = tempC->siguiente;
+				nodoGrafico = nodoGrafico + 1;
+			}
+				fprintf(grafico, "node%d [ label = \" ",nodoGrafico);
+				fprintf(grafico,"Carreta: %d\\nCliente: %d\\nEdad: %d\\nTurno: %d", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
+				fprintf(grafico," \"]; \n");
+
+			nodoGrafico = 100;
+			tempC = circular1;
+			while(tempC->siguiente != circular1)
+			{
+				fprintf(grafico, "node%d -> node%d;", nodoGrafico, nodoGrafico + 1);
+				tempC = tempC->siguiente;
+				nodoGrafico = nodoGrafico + 1;
+			}
+			fprintf(grafico, "node%d -> node%d;", nodoGrafico, 100);
+           
+		   fprintf(grafico,"\n}");//<-----termina grafica lista circular
 			
 			//Grafica de cola de espera normal
 			fprintf(grafico, "subgraph cluster_5{");
@@ -903,7 +938,6 @@ void Graficar(){
 		   fprintf(grafico,"\n \"];");
 		   fprintf(grafico,"\n}");//<-----termina grafica cola 
 
-
 			//Grafica de cola de espera oro
 			fprintf(grafico, "subgraph cluster_6{");
 			fprintf(grafico, "style=filled;");
@@ -920,42 +954,46 @@ void Graficar(){
 			
 		   fprintf(grafico,"\n \"];");
 		   fprintf(grafico,"\n}");//<-----termina grafica cola 
-
-		   //Grafica de lista circular
-	       fprintf(grafico, "subgraph cluster_7{");
-           fprintf(grafico,"\nlabel = \"Lista Simple\";");
-           fprintf(grafico,"\ncolor = lightgrey;\n");
-           fprintf(grafico,"node[shape=box, color=lightblue, style=filled];\n");
-           
-
-
-			GNodo *tempC = circular1;
-			int nodoGrafico = 100;
 			
-			while(tempC->siguiente != circular1)
-			{
-				fprintf(grafico, "node%d [ label = \" ",nodoGrafico);
-				fprintf(grafico,"Carreta: %d\\nCliente: %d\\nEdad: %d\\nTurno: %d", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
-				fprintf(grafico,"\"]; \n ");
-				tempC = tempC->siguiente;
-				nodoGrafico = nodoGrafico + 1;
-			}
-				fprintf(grafico, "node%d [ label = \" ",nodoGrafico);
-				fprintf(grafico,"Carreta: %d\\nCliente: %d\\nEdad: %d\\nTurno: %d", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
-				fprintf(grafico," \"]; \n");
-			//fprintf(grafico, "No Carreta: %d\n No. Cliente: %d\n Edad: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
-			nodoGrafico = 100;
-			tempC = circular1;
-			while(tempC->siguiente != circular1)
-			{
-				fprintf(grafico, "node%d -> node%d;", nodoGrafico, nodoGrafico + 1);
-				tempC = tempC->siguiente;
-				nodoGrafico = nodoGrafico + 1;
-			}
-			fprintf(grafico, "node%d -> node%d;", nodoGrafico, 100);
-           
-		   fprintf(grafico,"\n}");//<-----termina grafica lista circular
+		   //Grafica de lista doblemente enlzada
+	       fprintf(grafico, "subgraph cluster_8{");
+		   fprintf(grafico, "style=filled;");
+		   fprintf(grafico, "label=\"LISTA DOBLEMENTE ENLAZADA\";");
+		   fprintf(grafico, "node [ shape = record; rankdir=TB;];");
 
+			GNodo *temporal = lista;
+			int nodoLista = 200;
+			
+			while(temporal->seguente != NULL)
+			{
+				fprintf(grafico, "node%d [ label = \" ",nodoLista);
+				fprintf(grafico,"No Caja: %d\\nEstado: %s\\n Cliente Atendido: %d\\nCarreta: %d\\n Clientes Atendidos: %d\\n Turnos: %d", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido, temporal->turno);
+				fprintf(grafico,"\"]; \n ");
+				temporal = temporal->seguente;
+				nodoLista = nodoLista + 1;
+			}
+				fprintf(grafico, "node%d [ label = \" ",nodoLista);
+				fprintf(grafico,"No Caja: %d\\nEstado: %s\\n Cliente Atendido: %d\\nCarreta: %d\\n Clientes Atendidos: %d\\n Turnos: %d", temporal->no_caja, temporal->estado, temporal->no_cliente, temporal->no_carreta, temporal->no_atendido, temporal->turno);
+				fprintf(grafico," \"]; \n");
+			
+			nodoLista = 200;
+			temporal = lista;
+			while(temporal->seguente != NULL)
+			{
+				fprintf(grafico, "node%d -> node%d;", nodoLista, nodoLista + 1);
+				temporal = temporal->seguente;
+				nodoLista = nodoLista + 1;
+			}         
+			
+			while(temporal->precedente != NULL)
+			{
+				fprintf(grafico, "node%d -> node%d;", nodoLista, nodoLista - 1);
+				temporal = temporal->precedente;
+				nodoLista = nodoLista - 1;
+			}  
+			fprintf(grafico, "node%d -> node%d;", nodoLista, 200);
+			
+		    fprintf(grafico,"\n}");//<-----termina grafica lista doblemente enlazada
 
 
 			fprintf(grafico,"\n}");
@@ -964,3 +1002,10 @@ void Graficar(){
 			            system("gnome-open Practica1.jpg");
 }
 
+void Archivo(){
+		
+	FILE* log = fopen("LOG.txt","w+");
+	fprintf(log,"ARCHIVO LOG PARA LA DESCRIPCION DE PASOS DENTRO DEL SISTEMA DE SIMULACION\n");
+	
+	fclose (log);
+}
