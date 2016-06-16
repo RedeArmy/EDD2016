@@ -213,34 +213,35 @@ void Agregar(int bandera){
 	}
 /*SISTEMA DE SIMULACION*/
 void Simulacion(){
-	int id;
-	int *id1 = (int *)malloc(sizeof(int) * 2);
-	int *norm = (int *)malloc(sizeof(int) * 2);
-	int *oro = (int *)malloc(sizeof(int) * 2);
+	int id;//<-------valor de carreta 
+	int *id1 = (int *)malloc(sizeof(int) * 2);//<-------vector de 2 posiciones, valores de Cliente y Edad
+	int *norm = (int *)malloc(sizeof(int) * 2);//<------vector de 2 posiciones, valores de Cliente y Carreta
+	int *oro = (int *)malloc(sizeof(int) * 2);//<-------vector de 2 posiciones,valores de Cliente y Carreta
 	id = 0;
 	
 	srand(time (NULL));
 	  int q = rand() % (5-1+1) + 1;
 	  int z = rand() % (3-1+1) + 1;
 
-			  id = popP();
-			  id1 = popCP();
+			  id = popP();//<------Capta el valor eliminado de la pila
+			  id1 = popCP();//<----Capta el valor eliminado de la cola de prioridad 
 			  
-			  InsertarC(id,id1[0],id1[1],q);	
+			  InsertarC(id,id1[0],id1[1],q);//<-----Inserta valores en la lista circular
 			  
+		/* Verifica si cola de ORO esta visia, sino toma de cola normal*/	  
 		GNodo *tempCO = COnodo;
 		  if (tempCO==NULL){
 			  norm = popCN();
-			  Atender(norm[1],norm[0],z); 
+			  Atender(norm[1],norm[0],z);//<---Inserta valores en metodo
 		  }
 		  else{
 			  oro = popCO();
-			  Atender(oro[0],oro[1],z); 
+			  Atender(oro[0],oro[1],z);//<---Inserta valores en metodo
 		  }
-			  sacarComprador();
-			  sacarCarreta();		 
-			  Recorrer();
-			  Graficar();
+			  sacarComprador();//<---Metodo para sacar compradores y enviarlos a colas
+			  sacarCarreta();//<---Metodo para sacar carretas de cajas y enviarlas a pilas
+			  Recorrer();//<---Metodo generador en consola
+			  Graficar();//<---Metodo generador de grafo
 }
 
 /*PILA 1*/
@@ -531,7 +532,6 @@ void sacarCarreta(){
 	while(x < contador){
 		
 		int carreta = obtenerCarreta();
-		printf("%d",carreta);
 		
 		int j = rand() % (4-1+1) + 1;
 			switch(j){ 
@@ -920,6 +920,43 @@ void Graficar(){
 			
 		   fprintf(grafico,"\n \"];");
 		   fprintf(grafico,"\n}");//<-----termina grafica cola 
+
+		   //Grafica de lista circular
+	       fprintf(grafico, "subgraph cluster_7{");
+           fprintf(grafico,"\nlabel = \"Lista Simple\";");
+           fprintf(grafico,"\ncolor = lightgrey;\n");
+           fprintf(grafico,"node[shape=box, color=lightblue, style=filled];\n");
+           
+
+
+			GNodo *tempC = circular1;
+			int nodoGrafico = 100;
+			
+			while(tempC->siguiente != circular1)
+			{
+				fprintf(grafico, "node%d [ label = \" ",nodoGrafico);
+				fprintf(grafico,"Carreta: %d\\nCliente: %d\\nEdad: %d\\nTurno: %d", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
+				fprintf(grafico,"\"]; \n ");
+				tempC = tempC->siguiente;
+				nodoGrafico = nodoGrafico + 1;
+			}
+				fprintf(grafico, "node%d [ label = \" ",nodoGrafico);
+				fprintf(grafico,"Carreta: %d\\nCliente: %d\\nEdad: %d\\nTurno: %d", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
+				fprintf(grafico," \"]; \n");
+			//fprintf(grafico, "No Carreta: %d\n No. Cliente: %d\n Edad: %d\n Turno: %d\n\n", tempC->valor, tempC->cliente, tempC->edad, tempC->turno);
+			nodoGrafico = 100;
+			tempC = circular1;
+			while(tempC->siguiente != circular1)
+			{
+				fprintf(grafico, "node%d -> node%d;", nodoGrafico, nodoGrafico + 1);
+				tempC = tempC->siguiente;
+				nodoGrafico = nodoGrafico + 1;
+			}
+			fprintf(grafico, "node%d -> node%d;", nodoGrafico, 100);
+           
+		   fprintf(grafico,"\n}");//<-----termina grafica lista circular
+
+
 
 			fprintf(grafico,"\n}");
 			            fclose(grafico);
