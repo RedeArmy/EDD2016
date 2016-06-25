@@ -18,11 +18,6 @@ import java.util.concurrent.TimeoutException;
 
 public class RecibirAdmin {
 
-    public static String QUEUE_NAME = "Actualizar";
-    public static String QUEUE_NAME1 = "Agregar";
-    public static String QUEUE_NAME2 = "Archivo";
-    public static String QUEUE_NAME3 = "Eliminar";
-    public static String QUEUE_NAME4 = "SignIn";
     private static final String RPC_QUEUE_NAME = "Proyecto1";
     
     public DLista listadoble = new DLista();
